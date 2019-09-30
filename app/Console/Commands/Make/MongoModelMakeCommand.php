@@ -11,7 +11,7 @@ class MongoModelMakeCommand extends ModelMakeCommand
      *
      * @var string
      */
-    protected $name = 'make:mongomodel';
+    protected $name = 'make:mondel';
 
     /**
      * The type of class being generated.
