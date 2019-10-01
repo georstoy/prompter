@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c850acc31c988162985661613904c863",
+    "content-hash": "aa1d3391f12bb9e5033dc8d136f19cda",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -2962,36 +2962,6 @@
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
             "time": "2017-11-27T11:13:29+00:00"
-        },
-        {
-            "name": "tilakputta/laravel-make-mongo",
-            "version": "1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/TilakPutta/laravel-make-mongo.git",
-                "reference": "cd063ef58c7be6f558f20538efedb83fdb76918f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/TilakPutta/laravel-make-mongo/zipball/cd063ef58c7be6f558f20538efedb83fdb76918f",
-                "reference": "cd063ef58c7be6f558f20538efedb83fdb76918f",
-                "shasum": ""
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "TilakPutta\\Console": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Tilak Putta",
-                    "email": "putta.tilak@gmail.com"
-                }
-            ],
-            "description": "Laravel Artisan Make Model command for Mongo Model using Jenssegers/MongoDb",
-            "time": "2018-10-13T14:53:16+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
