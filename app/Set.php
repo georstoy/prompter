@@ -14,7 +14,7 @@ class Set extends MongoModel
 
     protected $primaryKey = '_id';
 
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * model life cycle event listeners
