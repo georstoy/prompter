@@ -6,8 +6,6 @@ use Jenssegers\Mongodb\Eloquent\Model as MongoModel;
 
 class DummyClass extends MongoModel
 {
-    protected $collection = 'DummyCollection';
-
     protected $fillable = [
 
     ];
