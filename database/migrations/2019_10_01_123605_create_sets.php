@@ -13,9 +13,9 @@ class CreateSets extends Migration
      */
     public function up()
     {
-        Schema::create('sets', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+        Schema::create('sets', function (Blueprint $collection) {
+            $collection->bigIncrements('_id');
+            $collection->timestamps();
         });
     }
 

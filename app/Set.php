@@ -12,7 +12,7 @@ class Set extends MongoModel
         'request'
     ];
 
-    protected $primaryKey = 'id';
+    protected $primaryKey = '_id';
 
     public $incrementing = false;
 
