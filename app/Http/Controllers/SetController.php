@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Set;
+use App\Traits\TestTools;
 use Illuminate\Http\Request;
 
 class SetController extends Controller
 {
+    use TestTools;
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +17,9 @@ class SetController extends Controller
     public function index()
     {
         return response()->json([
-            'action' => 'list sets'
+            'action' => 'list',
+            'resource_type' => 'Set',
+            'resources' => Set::all()
         ]);
     }
 
@@ -27,8 +31,12 @@ class SetController extends Controller
      */
     public function store(Request $request)
     {
+        $data['request'] = $request->all();
+        $set = Set::create($data);
         return response()->json([
-            'action' => 'create new set'
+            'action' => 'create',
+            'resource_type' => 'Set',
+            'resource' => $set
         ]);
     }
 
@@ -38,10 +46,14 @@ class SetController extends Controller
      * @param  \App\Set  $set
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Set $set)
+    public function show($id)
     {
+        $set = Set::find($id);
+        $this->write($set);
         return response()->json([
-            'action' => 'show set'
+            'action' => 'show',
+            'resource_type' => 'Set',
+            'resource' => $set
         ]);
     }
 
@@ -52,10 +64,16 @@ class SetController extends Controller
      * @param  \App\Set  $set
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, Set $set)
+    public function update(Request $request, $id)
     {
+        $set = Set::find($id);
+        $data['request']= $request->all();
+        $set->fill($data);
+        $set->save();
         return response()->json([
-            'action' => 'update set'
+            'action' => 'update',
+            'resource_type' => 'Set',
+            'resource' => $set
         ]);
     }
 
@@ -65,10 +83,14 @@ class SetController extends Controller
      * @param  \App\Set  $set
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Set $set)
+    public function destroy($id)
     {
+        $set = Set::find($id);
+        $set->delete();
         return response()->json([
-            'action' => 'delete set'
+            'action' => 'delete',
+            'message' => 'Set with ID '.$id.' was deleted!',
+            'resource_type' => 'Set',
         ]);
     }
 }

@@ -9,7 +9,7 @@ class Set extends MongoModel
     protected $collection = 'sets';
 
     protected $fillable = [
-
+        'request'
     ];
 
     protected $primaryKey = 'id';
