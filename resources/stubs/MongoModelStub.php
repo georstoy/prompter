@@ -11,25 +11,11 @@ class DummyClass extends MongoModel
     protected $fillable = [
 
     ];
+    protected $guarded = [
+        '_id'
+    ];
 
-    protected $primaryKey = 'id';
+    protected $primaryKey = '_id';
 
-    public $incrementing = false;
-
-    /**
-     * model life cycle event listeners
-     */
-    public static function boot(){
-        parent::boot();
-
-        static::creating(function ($instance){
-            if (!$instance->exists) {
-                $instance->id = uniqid();
-            }
-        });
-
-        static::created(function ($instance){
-
-        });
-    }
+    public $incrementing = true;
 }
