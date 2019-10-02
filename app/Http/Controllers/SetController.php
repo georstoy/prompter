@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Set;
 use App\Traits\TestTools;
+use Exception;
 use Illuminate\Http\Request;
 
 class SetController extends Controller
@@ -45,6 +46,18 @@ class SetController extends Controller
     {
         $data['request'] = $request->all();
         $set = Set::create($data);
+        try{
+            $set->fetch();
+            $set->save();
+        }
+        catch (Exception $e){
+            return response()->json([
+                'action' => 'create',
+            'resource_type' => 'Set',
+                'error' => $e->getMessage()
+            ], '400');
+        }
+
         return response()->json([
             'action' => 'create',
             'resource_type' => 'Set',

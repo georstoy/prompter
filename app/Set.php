@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Traits\Fetcher;
 use Jenssegers\Mongodb\Eloquent\Model as MongoModel;
 
 class Set extends MongoModel
 {
+    use Fetcher;
+
     protected $collection = 'sets';
 
     protected $fillable = [
