@@ -16,11 +16,23 @@ class SetController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            'action' => 'list',
-            'resource_type' => 'Set',
-            'resources' => Set::all()
-        ]);
+        $sets = Set::all();
+        if (count($sets)){
+            return response()->json([
+                'action' => 'list',
+                'resource_type' => 'Set',
+                'count' => count($sets),
+                'resources' => $sets
+            ]);
+
+        } else {
+            return response()->json([
+                'action' => 'list',
+                'resource_type' => 'Set',
+                'error' => 'This list is empty.'
+            ], '404');
+        }
+        ;
     }
 
     /**
@@ -37,7 +49,7 @@ class SetController extends Controller
             'action' => 'create',
             'resource_type' => 'Set',
             'resource' => $set
-        ]);
+        ], '201');
     }
 
     /**
@@ -49,12 +61,20 @@ class SetController extends Controller
     public function show($id)
     {
         $set = Set::find($id);
-        $this->write($set);
-        return response()->json([
-            'action' => 'show',
-            'resource_type' => 'Set',
-            'resource' => $set
-        ]);
+        if (!empty($set)){
+            return response()->json([
+                'action' => 'show',
+                'resource_type' => 'Set',
+                'resource' => $set
+            ], '200');
+        } else {
+            return response()->json([
+                'action' => 'show',
+                'resource_type' => 'Set',
+                'error' => 'This set does not exist.'
+            ], '404');
+        }
+
     }
 
     /**
@@ -74,7 +94,7 @@ class SetController extends Controller
             'action' => 'update',
             'resource_type' => 'Set',
             'resource' => $set
-        ]);
+        ], '200');
     }
 
     /**
@@ -91,6 +111,6 @@ class SetController extends Controller
             'action' => 'delete',
             'message' => 'Set with ID '.$id.' was deleted!',
             'resource_type' => 'Set',
-        ]);
+        ], '200');
     }
 }
