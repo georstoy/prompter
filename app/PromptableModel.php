@@ -2,22 +2,14 @@
 
 namespace App;
 
-use App\Traits\Fetcher;
-use App\Traits\Reader;
-
 use Jenssegers\Mongodb\Eloquent\Model as MongoModel;
 
 class PromptableModel extends MongoModel
 {
-    use Fetcher, Reader;
-
     protected $fillable = [
         'name',
         'html',
-        'url',
-        'targetTag',
-        'headId',
-        'footId',
+        'source_url'
     ];
 
     protected $guarded = [

@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Set;
 use App\Traits\TestTools;
+use App\Traits\ParseHTML;
+use App\Traits\TruncateHTML;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class SetController extends Controller
 {
-    use TestTools;
+    use TruncateHTML, ParseHTML, TestTools;
     /**
      * Display a listing of the resource.
      *
