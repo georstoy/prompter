@@ -53,14 +53,12 @@ class SetController extends Controller
             $newSet['source_url'] = $request['source_url'];
         }
 
-        $newSet->html_filename = 'set_'.$newSet->_id.'.html';
-
+        // Get html
         if ($request->hasFile('html')){
-            $request->html->storeAs(Set::HTML_STORAGE_PATH, $newSet->html_filename);
+            $html = file_get_contents($request->html->path());
         } else {
             if (isset($newSet['source_url'])){
                 $html = file_get_contents($newSet['source_url']);
-                Storage::put(Set::HTML_STORAGE_PATH.$newSet->html_filename, $html);
             } else {
                 return response()->json([
                     'action' => 'fetch',
@@ -69,8 +67,21 @@ class SetController extends Controller
                 ], '400');
             }
         }
-        $newSet['html'] = asset(Set::HTML_PUBLIC_PATH.$newSet->html_filename);
 
+        // Truncate
+        if (isset($request['start_from_id'])){
+            $html = $this->remove_head($html, $request['start_from_id']);
+        }
+        if (isset($request['stop_before_id'])){
+            $html = $this->remove_tail($html, $request['stop_before_id']);
+        }
+
+        // Save html to file
+        $html_filename = 'set_'.$newSet->_id.'.html';
+        Storage::put(Set::HTML_STORAGE_PATH.$html_filename, $html);
+        $newSet['html'] = asset(Set::HTML_PUBLIC_PATH.$html_filename);
+
+        // Get content
         #try{
         #    $set->read_html();
         #}

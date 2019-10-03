@@ -8,31 +8,26 @@ Trait TruncateHTML
 {
     use TestTools;
 
-    //Todo: implement parentTag
-    public function strip_html($headId = '', $footId = '')
+    public function remove_head($html, $id)
     {
-        $matches = [];
-
-        if (!empty(headId)){
-            $head = '/<{1}.*id=[\'\"]'.$headId.'[\'\"]>/'; # matches from the beggining of the line
-            preg_match($head, $this->html, $matches);
-            if (empty($matches)){
-                throw new InvalidArgument('Head not found. No html element with id=\''.$headId.'\'');
-            }
-            $headstr = $matches[0];
-
-            $this->html = $headstr.preg_split($head, $this->html)[1];
-
+        $pattern = '/<[^>]*id=[\'\"]'.$id.'[\'\"][^<]*>/';
+        preg_match($pattern, $html, $matches);
+        if (empty($matches)){
+            throw new InvalidArgument('Can\'t find start tag with id: '.$id.'\'');
         }
+        $start = $matches[0];
+        return $start.preg_split($pattern, $html)[1];
+        # start tag ^ included!
+    }
 
-        if (!empty(footId)){
-            $foot = '/<{1}.*id=[\'\"]'.$footId.'[\'\"]>/'; # matches from the beggining of the line
-            preg_match($foot, $this->html, $matches);
-            if (empty($matches)){
-                throw new InvalidArgument('Foot not found. No element with id=\''.$footId.'\'');
-            }
-            $this->html = preg_split($foot, $this->html)[0];
+    public function remove_tail($html, $id)
+    {
+        $pattern = '/<[^>]*id=[\'\"]'.$id.'[\'\"][^<]*>/';
+        preg_match($pattern, $html, $matches);
+        if (empty($matches)){
+            throw new InvalidArgument('Can\'t find end tag with id: '.$id.'\'');
         }
+        return preg_split($pattern, $html)[0];
     }
 
 }

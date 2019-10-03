@@ -22,8 +22,6 @@ class PromptableModel extends MongoModel
 
     public $incrementing = true;
 
-    public $html_filename;
-
     // where the html file is saved
     const HTML_STORAGE_PATH = 'public/html_records/';
 
