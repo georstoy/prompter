@@ -6,6 +6,7 @@ use App\Set;
 use App\Traits\TestTools;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class SetController extends Controller
 {
@@ -44,24 +45,49 @@ class SetController extends Controller
      */
     public function store(Request $request)
     {
-        $data['request'] = $request->all();
-        $set = Set::create($data);
-        try{
-            $set->fetch();
-            $set->save();
-        }
-        catch (Exception $e){
-            return response()->json([
-                'action' => 'create',
-            'resource_type' => 'Set',
-                'error' => $e->getMessage()
-            ], '400');
+
+        $newSet = Set::create(['name' => $request['name']]);
+        if (isset($request['source_url'])){
+            $newSet['source_url'] = $request['source_url'];
         }
 
+        $newSet->html_filename = 'set_'.$newSet->_id.'.html';
+
+        if ($request->hasFile('html')){
+            $request->html->storeAs(Set::HTML_STORAGE_PATH, $newSet->html_filename);
+        } else {
+            if (isset($newSet['source_url'])){
+                $html = file_get_contents($newSet['source_url']);
+                Storage::put(Set::HTML_STORAGE_PATH.$newSet->html_filename, $html);
+            } else {
+                return response()->json([
+                    'action' => 'fetch',
+                    'resource' => 'html file',
+                    'error' => 'source_url missing.'
+                ], '400');
+            }
+        }
+        $newSet['html'] = asset(Set::HTML_PUBLIC_PATH.$newSet->html_filename);
+
+        #try{
+        #    $set->read_html();
+        #}
+        #catch (Exception $e){
+        #    return response()->json([
+        #        'action' => 'read',
+        #    'resource_type' => 'Set',
+        #        'error' => [
+        #            'code' => $e->getCode(),
+        #            'message' => $e->getMessage()
+        #        ]
+        #    ], '400');
+        #}
+
+        $newSet->save();
         return response()->json([
             'action' => 'create',
             'resource_type' => 'Set',
-            'resource' => $set
+            'resource' => $newSet
         ], '201');
     }
 
