@@ -75,26 +75,28 @@ class SetController extends Controller
         if (isset($request['stop_before_id'])){
             $html = $this->remove_tail($html, $request['stop_before_id']);
         }
+        $parent = $this->find_parent($html, isset($request['parent']) ? $request['parent'] : '');
+        if ($parent['content']!=''){
+            $html = $parent['content'];
+        }
+        $newSet['parent'] = $parent['tag'];
 
         // Save html to file
         $html_filename = 'set_'.$newSet->_id.'.html';
         Storage::put(Set::HTML_STORAGE_PATH.$html_filename, $html);
         $newSet['html'] = asset(Set::HTML_PUBLIC_PATH.$html_filename);
 
-        // Get content
-        #try{
-        #    $set->read_html();
-        #}
-        #catch (Exception $e){
-        #    return response()->json([
-        #        'action' => 'read',
-        #    'resource_type' => 'Set',
-        #        'error' => [
-        #            'code' => $e->getCode(),
-        #            'message' => $e->getMessage()
-        #        ]
-        #    ], '400');
-        #}
+        // Get content - TODO
+        //$newSet['child'] = $this->find_child($html, isset($request['child']) ? $request['child'] : '');
+        //$newSet['value'] = $this->find_value($html, isset($request['value']) ? $request['value'] : '');
+        //
+        //$content = $this->read_html(
+        //    $html,
+        //    $newSet['parent'],
+        //    $newSet['child'],
+        //    $newSet['value']
+        //);
+        //$newSet['content'] = $content;
 
         $newSet->save();
         return response()->json([

@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Traits\ParseHTML;
 use Jenssegers\Mongodb\Eloquent\Model as MongoModel;
 
 class PromptableModel extends MongoModel
 {
+    use ParseHTML;
+
     protected $fillable = [
         'name',
         'html',
