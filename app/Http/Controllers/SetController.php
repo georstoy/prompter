@@ -86,18 +86,12 @@ class SetController extends Controller
         Storage::put(Set::HTML_STORAGE_PATH.$html_filename, $html);
         $newSet['html'] = asset(Set::HTML_PUBLIC_PATH.$html_filename);
 
-        // Get content - TODO
-        //$newSet['child'] = $this->find_child($html, isset($request['child']) ? $request['child'] : '');
-        //$newSet['value'] = $this->find_value($html, isset($request['value']) ? $request['value'] : '');
-        //
-        //$content = $this->read_html(
-        //    $html,
-        //    $newSet['parent'],
-        //    $newSet['child'],
-        //    $newSet['value']
-        //);
-        //$newSet['content'] = $content;
-
+        // Get content TODO: asynchronous
+        $newSet['item'] = isset($request['item']) ? $request['item'] : '';
+        $newSet['content'] = $this->read_html(
+            $html,
+            $newSet['item']
+        );
         $newSet->save();
         return response()->json([
             'action' => 'create',

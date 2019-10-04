@@ -8,24 +8,42 @@ use App\Exceptions\InvalidArgument as InvalidArgument;
 
 Trait ParseHTML
 {
-    public function read_html()
+    public function read_html($html, $tag = '')
     {
-        if (empty($this->targetTag)){
-            throw new InvalidArgument('targetTag missing.');
-        }
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+        $container = [];
 
-        $dom = new DOMDocument;
-        if ($dom->loadHTML($this->html)){
-            $nodes = $dom->getElementsByTagName($this->targetTag);
-            if (!empty($nodes)){
-                foreach($nodes as $node){
-                    array_push($this->content, $node->nodeValue);
+        if ($tag!=''){
+            $elements = $dom->getElementsByTagName($tag);
+        } else {
+            $elements = $dom->childNodes;
+        }
+        foreach ($elements as $el){
+            $el_content = $this->get_content($el);
+            foreach($el_content as $content)
+                array_push($container, $content);
+        }
+        return $container;
+    }
+
+    public function get_content($node)
+    {
+        $container = [];
+
+        if ($node->childNodes){
+            foreach($node->childNodes as $el){
+                $el_content = $this->get_content($el);
+                foreach ($el_content as $content){
+                    array_push($container, $content);
                 }
-            } else {
-                throw new InvalidArgument('No '.$this->targetTag.' tags found.');
             }
         } else {
-            throw new DOMException('Couldn\'t load the html.');
+            $content = trim($node->textContent);
+            if ($content!=''){
+                array_push($container, $content);
+            }
         }
+        return $container;
     }
 }
