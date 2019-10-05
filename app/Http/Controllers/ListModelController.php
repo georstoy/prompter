@@ -21,12 +21,22 @@ class ListModelController extends Controller
     public function index()
     {
         $lists = ListModel::all();
+        $brief_list = [];
+        foreach($lists as $list){
+            array_push($brief_list, [
+                'id' => $list['_id'],
+                'name' => $list['name'],
+                'item_count' => $list['content']['item_count'],
+                'json' => $list['content']['json']
+            ]);
+        }
+
         if (count($lists)){
             return response()->json([
-                'action' => 'list',
+                'action' => 'index',
                 'resource_type' => 'List',
-                'count' => count($lists),
-                'resources' => $lists
+                'results' => count($lists),
+                'resources' => $brief_list
             ]);
 
         } else {
