@@ -48,17 +48,18 @@ class SetController extends Controller
     public function store(Request $request)
     {
 
-        $newSet = Set::create(['name' => $request['name']]);
+        $newSet = Set::create();
+        $newSet['name'] = $request['name'];
         if (isset($request['source_url'])){
             $newSet['source_url'] = $request['source_url'];
         }
 
         // Get html
         if ($request->hasFile('html')){
-            $html = file_get_contents($request->html->path());
+            $html_content = file_get_contents($request->html->path());
         } else {
             if (isset($newSet['source_url'])){
-                $html = file_get_contents($newSet['source_url']);
+                $html_content = file_get_contents($newSet['source_url']);
             } else {
                 return response()->json([
                     'action' => 'fetch',
@@ -69,32 +70,37 @@ class SetController extends Controller
         }
 
         // Truncate
+        $filters = [];
         if (isset($request['start_from_id'])){
             $filters['start_from_id'] = $request['start_from_id'];
-            $html = $this->remove_head($html, $request['start_from_id']);
+            $html = $this->remove_head($html_content, $request['start_from_id']);
         }
         if (isset($request['stop_before_id'])){
             $filters['stop_before_id'] = $request['stop_before_id'];
-            $html = $this->remove_tail($html, $request['stop_before_id']);
+            $html = $this->remove_tail($html_content, $request['stop_before_id']);
         }
-        $parent = $this->find_parent($html, isset($request['parent']) ? $request['parent'] : '');
+        $parent = $this->find_parent($html_content, isset($request['parent']) ? $request['parent'] : '');
         if ($parent['content']!=''){
-            $html = $parent['content'];
+            $html_content = $parent['content'];
         }
-        $newSet['filters'] = $filters;
-        $newSet['parent'] = $parent['tag'];
+        $html_data = [];
+        $html_data['parent'] = $parent['tag'];
+        $html_data['item'] = isset($request['item']) ? $request['item'] : '';
+        $html_data['filters'] = $filters;
 
         // Save html to file
         $html_filename = 'set_'.$newSet->_id.'.html';
-        Storage::put(Set::HTML_STORAGE_PATH.$html_filename, $html);
-        $newSet['html'] = asset(Set::HTML_PUBLIC_PATH.$html_filename);
+        Storage::put(Set::HTML_STORAGE_PATH.$html_filename, $html_content);
+        $html_link = asset(Set::HTML_PUBLIC_PATH.$html_filename);
+        $html_data = array('link' => $html_link) + $html_data;
 
         // Get content TODO: asynchronous
-        $newSet['item'] = isset($request['item']) ? $request['item'] : '';
         $newSet['content'] = $this->read_html(
-            $html,
-            $newSet['item']
+            $html_content,
+            $html_data['item']
         );
+
+        $newSet['html'] = $html_data;
         $newSet->save();
         return response()->json([
             'action' => 'create',
