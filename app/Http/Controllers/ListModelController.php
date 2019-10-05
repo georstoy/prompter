@@ -89,7 +89,7 @@ class ListModelController extends Controller
         $html_data['filters'] = $filters;
 
         // Save html to file
-        $html_filename = 'list_'.$newList->_id.'.html';
+        $html_filename = ListModel::PREFIX.$newList->_id.'.html';
         Storage::put(ListModel::HTML_STORAGE_PATH.$html_filename, $html_content);
         $html_link = asset(ListModel::HTML_PUBLIC_PATH.$html_filename);
         $html_data = array('link' => $html_link) + $html_data;
