@@ -21,13 +21,13 @@ class ListModelController extends Controller
     public function index()
     {
         $lists = ListModel::all();
-        $brief_list = [];
+        $indexed_lists = [];
         foreach($lists as $list){
-            array_push($brief_list, [
+            array_push($indexed_lists, [
                 'id' => $list['_id'],
                 'name' => $list['name'],
                 'item_count' => $list['content']['item_count'],
-                'json' => $list['content']['json']
+                'content' => $list['content']['json']
             ]);
         }
 
@@ -36,7 +36,7 @@ class ListModelController extends Controller
                 'action' => 'index',
                 'resource_type' => 'List',
                 'results' => count($lists),
-                'resources' => $brief_list
+                'resources' => $indexed_lists
             ]);
 
         } else {
@@ -138,10 +138,27 @@ class ListModelController extends Controller
     {
         $list = ListModel::find($id);
         if (!empty($list)){
+
+            $show_schema = [
+                'list_id' => $list['_id'],
+                'name' => isset($list['name']) ? $list['name'] : 'Unnamed',
+                'item_count' => isset($list['content']['item_count']) ? $list['content']['item_count'] : 'Unknown',
+                'content' => isset($list['content']['json']) ? $list['content']['json'] : 'Unknown',
+                'created_at' => $list['created_at'],
+                'updated_at' => $list['updated_at'],
+                'html'  => [
+                    'source' => isset($list['source_url']) ? $list['source_url'] : 'Upload',
+                    'filters' => !empty($list['html']['filters']) ? $list['html']['filters'] : 'None',
+                    'link' => isset($list['html']['link']) ? $list['html']['link'] : 'Unavailable',
+                    'parent' => isset($list['html']['parent']) ? $list['html']['parent'] : 'None',
+                    'item' => isset($list['html']['item']) ? $list['html']['item'] : 'Undefined'
+                ]
+            ];
+
             return response()->json([
                 'action' => 'show',
                 'resource_type' => 'List',
-                'resource' => $list
+                'resource' => $show_schema
             ], '200');
         } else {
             return response()->json([
