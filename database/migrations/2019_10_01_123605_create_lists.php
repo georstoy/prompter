@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSets extends Migration
+class CreateLists extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSets extends Migration
      */
     public function up()
     {
-        Schema::create('sets', function (Blueprint $collection) {
+        Schema::create('lists', function (Blueprint $collection) {
             $collection->bigIncrements('_id');
             $collection->timestamps();
         });
@@ -26,6 +26,6 @@ class CreateSets extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sets');
+        Schema::dropIfExists('lists');
     }
 }

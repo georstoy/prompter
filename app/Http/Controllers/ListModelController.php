@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Set;
+use App\ListModel;
 use App\Traits\TestTools;
 use App\Traits\ParseHTML;
 use App\Traits\TruncateHTML;
@@ -10,7 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class SetController extends Controller
+class ListModelController extends Controller
 {
     use TruncateHTML, ParseHTML, TestTools;
     /**
@@ -20,19 +20,19 @@ class SetController extends Controller
      */
     public function index()
     {
-        $sets = Set::all();
-        if (count($sets)){
+        $lists = ListModel::all();
+        if (count($lists)){
             return response()->json([
                 'action' => 'list',
-                'resource_type' => 'Set',
-                'count' => count($sets),
-                'resources' => $sets
+                'resource_type' => 'List',
+                'count' => count($lists),
+                'resources' => $lists
             ]);
 
         } else {
             return response()->json([
                 'action' => 'list',
-                'resource_type' => 'Set',
+                'resource_type' => 'List',
                 'error' => 'This list is empty.'
             ], '404');
         }
@@ -48,18 +48,18 @@ class SetController extends Controller
     public function store(Request $request)
     {
 
-        $newSet = Set::create();
-        $newSet['name'] = $request['name'];
+        $newList = ListModel::create();
+        $newList['name'] = $request['name'];
         if (isset($request['source_url'])){
-            $newSet['source_url'] = $request['source_url'];
+            $newList['source_url'] = $request['source_url'];
         }
 
         // Get html
         if ($request->hasFile('html')){
             $html_content = file_get_contents($request->html->path());
         } else {
-            if (isset($newSet['source_url'])){
-                $html_content = file_get_contents($newSet['source_url']);
+            if (isset($newList['source_url'])){
+                $html_content = file_get_contents($newList['source_url']);
             } else {
                 return response()->json([
                     'action' => 'fetch',
@@ -89,46 +89,46 @@ class SetController extends Controller
         $html_data['filters'] = $filters;
 
         // Save html to file
-        $html_filename = 'set_'.$newSet->_id.'.html';
-        Storage::put(Set::HTML_STORAGE_PATH.$html_filename, $html_content);
-        $html_link = asset(Set::HTML_PUBLIC_PATH.$html_filename);
+        $html_filename = 'list_'.$newList->_id.'.html';
+        Storage::put(ListModel::HTML_STORAGE_PATH.$html_filename, $html_content);
+        $html_link = asset(ListModel::HTML_PUBLIC_PATH.$html_filename);
         $html_data = array('link' => $html_link) + $html_data;
 
         // Get content TODO: asynchronous
-        $newSet['content'] = $this->read_html(
+        $newList['content'] = $this->read_html(
             $html_content,
             $html_data['item']
         );
 
-        $newSet['html'] = $html_data;
-        $newSet->save();
+        $newList['html'] = $html_data;
+        $newList->save();
         return response()->json([
             'action' => 'create',
-            'resource_type' => 'Set',
-            'resource' => $newSet
+            'resource_type' => 'List',
+            'resource' => $newList
         ], '201');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Set  $set
+     * @param  \App\ListModel  $list
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        $set = Set::find($id);
-        if (!empty($set)){
+        $list = ListModel::find($id);
+        if (!empty($list)){
             return response()->json([
                 'action' => 'show',
-                'resource_type' => 'Set',
-                'resource' => $set
+                'resource_type' => 'List',
+                'resource' => $list
             ], '200');
         } else {
             return response()->json([
                 'action' => 'show',
-                'resource_type' => 'Set',
-                'error' => 'This set does not exist.'
+                'resource_type' => 'List',
+                'error' => 'This list does not exist.'
             ], '404');
         }
 
@@ -138,36 +138,36 @@ class SetController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Set  $set
+     * @param  \App\ListModel  $list
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(Request $request, $id)
     {
-        $set = Set::find($id);
+        $list = ListModel::find($id);
         $data['request']= $request->all();
-        $set->fill($data);
-        $set->save();
+        $list->fill($data);
+        $list->save();
         return response()->json([
             'action' => 'update',
-            'resource_type' => 'Set',
-            'resource' => $set
+            'resource_type' => 'List',
+            'resource' => $list
         ], '200');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Set  $set
+     * @param  \App\ListModel  $list
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        $set = Set::find($id);
-        $set->delete();
+        $list = ListModel::find($id);
+        $list->delete();
         return response()->json([
             'action' => 'delete',
-            'message' => 'Set with ID '.$id.' was deleted!',
-            'resource_type' => 'Set',
+            'message' => 'List with ID '.$id.' was deleted!',
+            'resource_type' => 'List',
         ], '200');
     }
 }
