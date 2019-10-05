@@ -25,16 +25,11 @@ class PromptableModel extends MongoModel
 
     public $incrementing = true;
 
-    // where the html file is saved
+    # where files are saved
     const HTML_STORAGE_PATH = 'public/html_records/';
+    const JSON_STORAGE_PATH = 'public/json';
 
-    // where the html file is accessed
+    # where files are accessed
     const HTML_PUBLIC_PATH = 'storage/html_records/';
-
-    // the result of reading the html
-    public $content = [];
-
-    // what element to look for in the html
-    public $targetTag;
-
+    const JSON_PUBLIC_PATH = 'storage/json';
 }

@@ -88,19 +88,28 @@ class ListModelController extends Controller
         $html_data['item'] = isset($request['item']) ? $request['item'] : '';
         $html_data['filters'] = $filters;
 
-        // Save html to file
+        // Save html to public file
         $html_filename = ListModel::PREFIX.$newList->_id.'.html';
         Storage::put(ListModel::HTML_STORAGE_PATH.$html_filename, $html_content);
         $html_link = asset(ListModel::HTML_PUBLIC_PATH.$html_filename);
         $html_data = array('link' => $html_link) + $html_data;
 
         // Get content TODO: asynchronous
-        $newList['content'] = $this->read_html(
+        $content_data = [];
+        $content = $this->read_html(
             $html_content,
             $html_data['item']
         );
+        $content_data['item_count'] = count($content);
+            // Save content to public Json
+        $json_filename = ListModel::PREFIX.$newList->_id.'.json';
+        Storage::put(ListModel::JSON_STORAGE_PATH.$json_filename, json_encode($content));
+        $json_link = asset(ListModel::JSON_PUBLIC_PATH.$json_filename);
+        $content_data['json'] = $json_link;
+
 
         $newList['html'] = $html_data;
+        $newList['content'] = $content_data;
         $newList->save();
         return response()->json([
             'action' => 'create',
