@@ -70,15 +70,18 @@ class SetController extends Controller
 
         // Truncate
         if (isset($request['start_from_id'])){
+            $filters['start_from_id'] = $request['start_from_id'];
             $html = $this->remove_head($html, $request['start_from_id']);
         }
         if (isset($request['stop_before_id'])){
+            $filters['stop_before_id'] = $request['stop_before_id'];
             $html = $this->remove_tail($html, $request['stop_before_id']);
         }
         $parent = $this->find_parent($html, isset($request['parent']) ? $request['parent'] : '');
         if ($parent['content']!=''){
             $html = $parent['content'];
         }
+        $newSet['filters'] = $filters;
         $newSet['parent'] = $parent['tag'];
 
         // Save html to file
